@@ -167,7 +167,7 @@ jobs:
           codesign -dv "$APP" 2>&1 | grep -E "Authority|TeamIdentifier|Identifier"
 
       - name: Upload to TestFlight
-        if: ${{ inputs.upload != false }}
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.upload }}
         env:
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
