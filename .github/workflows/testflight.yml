@@ -8,6 +8,15 @@ name: TestFlight
 # IOS_PROFILE_BASE64, ASC_KEY_P8, ASC_KEY_ID, ASC_ISSUER_ID, APPLE_TEAM_ID.
 
 on:
+  # A push to main that touches the app also uploads a new TestFlight build.
+  push:
+    branches: [main]
+    paths:
+      - App/**
+      - Sources/**
+      - Package.swift
+      - project.yml
+      - .github/workflows/testflight.yml
   workflow_dispatch:
     inputs:
       runner:
@@ -158,7 +167,7 @@ jobs:
           codesign -dv "$APP" 2>&1 | grep -E "Authority|TeamIdentifier|Identifier"
 
       - name: Upload to TestFlight
-        if: ${{ inputs.upload }}
+        if: ${{ inputs.upload != false }}
         env:
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
