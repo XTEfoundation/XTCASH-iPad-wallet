@@ -1,0 +1,31 @@
+XTE iPad Wallet
+Copyright (c) 2026, TRRXITTE Int., incorporate
+
+Licensed under the GNU Affero General Public License v3.0 (see LICENSE).
+
+This product includes software developed by third parties:
+
+* CryptoNote reference implementation
+  Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
+* Karbowanec
+  Copyright (c) 2016-2018, The Karbowanec developers
+* Monero
+  Copyright (c) 2014-2018, The Monero Project
+* TurtleCoin
+  Copyright (c) 2018-2020, The TurtleCoin Developers
+* traaitt (TRRXITTE/traaitt), GPL-3.0
+  Copyright (c) 2020-2026, TRRXITTE Int., incorporate
+
+Sources/CXTECrypto contains files copied from traaitt/src/crypto (crypto-ops.c,
+crypto-ops-data.c, crypto-ops.h, keccak.c, keccak.h) and a C port of
+traaitt/src/crypto/crypto.cpp (xte_crypto.c). Their original notices are kept
+in each file; the traaitt license is in Sources/CXTECrypto/LICENSE-traaitt-GPL3.txt.
+GPL-3.0 code may be combined with AGPL-3.0 code (GPLv3 section 13).
+
+Sources/XTEWalletCore/MnemonicWordList.swift is the English CryptoNote
+mnemonic word list from traaitt/src/mnemonics/WordList.h.
+
+Tests/XTEWalletCoreTests/Vectors/crypto-tests.txt is a subset of
+tests/crypto/tests.txt from the Monero Project (BSD-3-Clause).
+
+The app icon is the XTE/traaitt icon from TRRXITTE/XTEcash-wallet.

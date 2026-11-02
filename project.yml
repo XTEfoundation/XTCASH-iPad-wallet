@@ -1,0 +1,87 @@
+name: XTEWallet
+options:
+  bundleIdPrefix: io.traaitt
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+packages:
+  XTEWalletCore:
+    path: .
+targets:
+  XTEWallet:
+    type: application
+    platform: iOS
+    sources:
+      - path: App/XTEWallet
+    dependencies:
+      - package: XTEWalletCore
+        product: XTEWalletCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.osx.ipad
+        PRODUCT_NAME: XTEWallet
+        TARGETED_DEVICE_FAMILY: "2"
+        SUPPORTS_MACCATALYST: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: App/XTEWallet/Info.plist
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: ""
+    info:
+      path: App/XTEWallet/Info.plist
+      properties:
+        CFBundleDisplayName: XTE
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSRequiresIPhoneOS: true
+        UILaunchScreen: {}
+        UIRequiresFullScreen: false
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+          NSExceptionDomains:
+            trrxitte.com:
+              NSIncludesSubdomains: true
+              NSExceptionAllowsInsecureHTTPLoads: true
+        NSFaceIDUsageDescription: Face ID protects access to your XTE wallet keys.
+        CFBundleURLTypes:
+          - CFBundleURLName: io.traaitt.xte.payment
+            CFBundleURLSchemes: [xte, traaitt]
+  XTEWalletTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: App/XTEWalletTests
+    dependencies:
+      - target: XTEWallet
+      - package: XTEWalletCore
+        product: XTEWalletCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.osx.ipad.tests
+        TARGETED_DEVICE_FAMILY: "2"
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/XTEWallet.app/XTEWallet
+        BUNDLE_LOADER: $(TEST_HOST)
+schemes:
+  XTEWallet:
+    build:
+      targets:
+        XTEWallet: all
+        XTEWalletTests: [test]
+    test:
+      targets:
+        - XTEWalletTests
+      gatherCoverageData: false
