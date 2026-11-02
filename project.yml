@@ -18,6 +18,10 @@ targets:
     platform: iOS
     sources:
       - path: App/XTEWallet
+        excludes:
+          - PrivacyInfo.xcprivacy
+      - path: App/XTEWallet/PrivacyInfo.xcprivacy
+        buildPhase: resources
     dependencies:
       - package: XTEWalletCore
         product: XTEWalletCore
@@ -40,6 +44,8 @@ targets:
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSRequiresIPhoneOS: true
+        # Only standard, exempt crypto (CryptoNote signing/key derivation, Keychain, HTTPS).
+        ITSAppUsesNonExemptEncryption: false
         UILaunchScreen: {}
         UIRequiresFullScreen: false
         UIApplicationSceneManifest:
