@@ -33,7 +33,8 @@ transactions are built and ring-signed on the device and relayed to a public XTE
   `/get_transactions_status`. Sending requires a fresh Face ID / passcode confirmation.
 * **Node** – loads the public node list from
   [TRRXITTE/XTEnetworkserver `traaitt.json`](https://github.com/TRRXITTE/XTEnetworkserver/blob/main/traaitt.json),
-  shows node/network height, sync state and peers; custom nodes are supported.
+  shows node/network height, sync state and peers; custom nodes are supported. If the built-in default
+  node (`main.trrxitte.com:443`) is unreachable, the app switches once to the first responding node from that list.
 * **Settings** – node selection, XTE-only display (no fiat prices / no third-party price APIs),
   backup screen (seed + keys) behind authentication, rescan, delete wallet.
 * **URL schemes** – `xte://` and `traaitt://` links open the Send screen pre-filled.

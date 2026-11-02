@@ -18,27 +18,40 @@ func fail(_ msg: String) -> Never {
 }
 
 let args = CommandLine.arguments
-let host = args.count > 1 ? args[1] : XTEConfig.defaultNode.host
-let port = args.count > 2 ? Int(args[2]) ?? 443 : XTEConfig.defaultNode.port
-let ssl = args.count > 3 ? args[3] == "ssl" : (port == 443)
-let node = NodeInfo(name: host, host: host, port: port, ssl: ssl)
-let daemon = DaemonClient(node: node, timeout: 30)
+let explicitNode: NodeInfo? = {
+    guard args.count > 1, !args[1].isEmpty else { return nil }
+    let port = args.count > 2 ? Int(args[2]) ?? 443 : 443
+    let ssl = args.count > 3 ? args[3] == "ssl" : (port == 443)
+    return NodeInfo(name: args[1], host: args[1], port: port, ssl: ssl)
+}()
+/// Set REQUIRE_EXPLICIT_NODE=1 to fail if the requested node is down instead of trying the public list.
+let strict = ProcessInfo.processInfo.environment["REQUIRE_EXPLICIT_NODE"] == "1"
 
 func run() async {
+    let list: [NodeInfo]
     do {
-        let list = try await DaemonClient.fetchNodeList()
+        list = try await DaemonClient.fetchNodeList()
         print("node list: \(list.count) nodes: \(list.map { "\($0.host):\($0.port)" }.joined(separator: ", "))")
     } catch {
         fail("node list: \(error)")
     }
 
-    let info: DaemonInfo
-    do {
-        info = try await daemon.info()
-    } catch {
-        fail("\(node.baseURL) /info: \(error.localizedDescription)")
+    var candidates = [explicitNode ?? XTEConfig.defaultNode]
+    if !strict { candidates += list.filter { !candidates.contains($0) } }
+
+    var picked: (NodeInfo, DaemonInfo)?
+    for candidate in candidates {
+        do {
+            let i = try await DaemonClient(node: candidate, timeout: 20).info()
+            print("OK   \(candidate.baseURL) height=\(i.localHeight) network=\(i.networkTopHeight) peers=\(i.peers)")
+            if picked == nil { picked = (candidate, i) }
+        } catch {
+            print("DOWN \(candidate.baseURL): \(error.localizedDescription)")
+        }
     }
-    print("\(node.baseURL) height=\(info.localHeight) network=\(info.networkTopHeight) peers=\(info.peers)")
+    guard let (node, info) = picked else { fail("no reachable XTE node") }
+    let daemon = DaemonClient(node: node, timeout: 30)
+    print("using \(node.baseURL)")
     guard info.networkTopHeight > 1000 else { fail("implausible height") }
 
     if let fee = try? await daemon.fee() {

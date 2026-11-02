@@ -11,14 +11,18 @@ on:
   workflow_dispatch:
     inputs:
       host:
-        description: Node host
-        default: main.trrxitte.com
+        description: "Node host (empty = default node, then the public node list)"
+        default: ""
       port:
         description: Node port
         default: "443"
       scheme:
         description: "ssl or plain"
         default: ssl
+      strict:
+        description: "Fail if this node is down instead of trying the public list"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -31,4 +35,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run xte-node-check
         working-directory: Tools/NodeCheck
-        run: swift run -c release xte-node-check "${{ inputs.host || 'main.trrxitte.com' }}" "${{ inputs.port || '443' }}" "${{ inputs.scheme || 'ssl' }}"
+        env:
+          REQUIRE_EXPLICIT_NODE: ${{ inputs.strict && '1' || '0' }}
+        run: swift run -c release xte-node-check "${{ inputs.host }}" "${{ inputs.port || '443' }}" "${{ inputs.scheme || 'ssl' }}"

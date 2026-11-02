@@ -136,7 +136,21 @@ final class AppModel: ObservableObject {
         } catch {
             daemonInfo = nil
             nodeError = error.localizedDescription
+            // The built-in default node is unreachable: fail over once to the first public
+            // node from the official list that answers. A node the user picked is never replaced.
+            if node == XTEConfig.defaultNode, let alternative = await firstReachablePublicNode() {
+                nodeError = nil
+                node = alternative   // didSet persists the choice and restarts sync
+            }
         }
+    }
+
+    private func firstReachablePublicNode() async -> NodeInfo? {
+        if nodes.count <= 1 { await refreshNodeList() }
+        for candidate in nodes where candidate != XTEConfig.defaultNode {
+            if (try? await DaemonClient(node: candidate, timeout: 10).info()) != nil { return candidate }
+        }
+        return nil
     }
 
     // MARK: Sync
