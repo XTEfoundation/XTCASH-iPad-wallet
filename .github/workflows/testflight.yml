@@ -9,7 +9,7 @@ name: TestFlight
 # IOS_PROFILE_BASE64 is the App Store profile "XTCASH AppStore io.traaitt.xtcash.ipad"
 # (UUID cfac1192-0661-4396-abe3-dd8443f827f9). Without the secrets the "signing"
 # job reports it and the TestFlight job is skipped, so this file never goes red
-# just because the secrets are not set yet.
+# just because the secrets are not set yet. App Store Connect record: "XTCASH iOS iPad".
 
 on:
   # A push to main that touches the app also uploads a new TestFlight build.
