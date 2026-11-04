@@ -9,7 +9,7 @@ transactions are built and ring-signed on the device and relayed to a public XTC
 
 | | |
 |---|---|
-| Bundle ID | `io.traaitt.cash.ipad` |
+| Bundle ID | `io.traaitt.xtcash.ipad` |
 | Display name | XTCASH |
 | Version | 1.0.0 (build 1) |
 | Minimum OS | iPadOS 16 |
@@ -110,9 +110,9 @@ Note: the Keychain item requires a device passcode. In the simulator, enrol Face
 
 Nothing secret is stored in this repository; signing happens on a Mac with the TRRXITTE Apple Developer account.
 
-1. Apple Developer Program membership for the organisation; register the App ID `io.traaitt.cash.ipad`
+1. Apple Developer Program membership for the organisation; register the App ID `io.traaitt.xtcash.ipad`
    (no special capabilities are needed; Keychain access works with the default access group).
-2. In App Store Connect create the app (platform iOS, iPad only), bundle ID `io.traaitt.cash.ipad`, SKU of your choice.
+2. In App Store Connect create the app (platform iOS, iPad only), bundle ID `io.traaitt.xtcash.ipad`, SKU of your choice.
 3. `xcodegen generate`, open the project, select the **XTCASHWallet** target → *Signing & Capabilities* →
    your Team (or set `DEVELOPMENT_TEAM` in `project.yml` locally, do not commit personal IDs if you prefer).
 4. *Product → Archive* with destination *Any iOS Device*, then *Distribute App → App Store Connect → Upload*.
@@ -123,7 +123,7 @@ Nothing secret is stored in this repository; signing happens on a Mac with the T
    xcodebuild -exportArchive -archivePath build/XTCASHWallet.xcarchive -exportPath build/export \
      -exportOptionsPlist ExportOptions.plist   # method: app-store-connect, teamID: <TEAMID>
    ```
-   CI: `.github/workflows/testflight.yml` archives, signs (profile "XTCASH AppStore io.traaitt.cash.ipad")
+   CI: `.github/workflows/testflight.yml` archives, signs (profile "XTCASH AppStore io.traaitt.xtcash.ipad")
    and uploads with an App Store Connect API key, all from GitHub **secrets** (never in the repo). Without the
    secrets the TestFlight job is skipped.
 5. In TestFlight add internal testers; external testing requires Beta App Review.

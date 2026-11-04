@@ -31,6 +31,6 @@ final class XTCASHWalletAppTests: XCTestCase {
         let schemes = types?.flatMap { $0["CFBundleURLSchemes"] as? [String] ?? [] } ?? []
         XCTAssertEqual(schemes, ["xtcash"])
         XCTAssertEqual(info["CFBundleDisplayName"] as? String, "XTCASH")
-        XCTAssertEqual(Bundle.main.bundleIdentifier, "io.traaitt.cash.ipad")
+        XCTAssertEqual(Bundle.main.bundleIdentifier, "io.traaitt.xtcash.ipad")
     }
 }

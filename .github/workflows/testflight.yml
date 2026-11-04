@@ -1,13 +1,13 @@
 name: TestFlight
 
-# Signed Release archive of the XTCASH iPad app (io.traaitt.cash.ipad), exported
+# Signed Release archive of the XTCASH iPad app (io.traaitt.xtcash.ipad), exported
 # as an App Store .ipa and uploaded to TestFlight. Separate from ci.yml, which
 # keeps building and testing on the simulator.
 #
 # Needs the repository secrets IOS_DIST_P12_BASE64, IOS_DIST_P12_PASSWORD,
 # IOS_PROFILE_BASE64, ASC_KEY_P8, ASC_KEY_ID, ASC_ISSUER_ID, APPLE_TEAM_ID.
-# IOS_PROFILE_BASE64 is the App Store profile "XTCASH AppStore io.traaitt.cash.ipad"
-# (UUID e789ec28-c1b7-4beb-931f-01e70bd8c1a5). Without the secrets the "signing"
+# IOS_PROFILE_BASE64 is the App Store profile "XTCASH AppStore io.traaitt.xtcash.ipad"
+# (UUID cfac1192-0661-4396-abe3-dd8443f827f9). Without the secrets the "signing"
 # job reports it and the TestFlight job is skipped, so this file never goes red
 # just because the secrets are not set yet.
 
@@ -74,9 +74,9 @@ jobs:
     runs-on: ${{ inputs.runner || 'macos-15' }}
     timeout-minutes: 120
     env:
-      BUNDLE_ID: io.traaitt.cash.ipad
-      PROFILE_NAME: XTCASH AppStore io.traaitt.cash.ipad
-      PROFILE_UUID_EXPECTED: e789ec28-c1b7-4beb-931f-01e70bd8c1a5
+      BUNDLE_ID: io.traaitt.xtcash.ipad
+      PROFILE_NAME: XTCASH AppStore io.traaitt.xtcash.ipad
+      PROFILE_UUID_EXPECTED: cfac1192-0661-4396-abe3-dd8443f827f9
     steps:
       - uses: actions/checkout@v4
 

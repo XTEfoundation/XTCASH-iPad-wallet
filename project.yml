@@ -27,7 +27,7 @@ targets:
         product: XTEWalletCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.cash.ipad
+        PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.xtcash.ipad
         PRODUCT_NAME: XTCASHWallet
         TARGETED_DEVICE_FAMILY: "2"
         SUPPORTS_MACCATALYST: NO
@@ -63,7 +63,7 @@ targets:
               NSExceptionAllowsInsecureHTTPLoads: true
         NSFaceIDUsageDescription: Face ID protects access to your XTCASH wallet keys.
         CFBundleURLTypes:
-          - CFBundleURLName: io.traaitt.cash.payment
+          - CFBundleURLName: io.traaitt.xtcash.payment
             CFBundleURLSchemes: [xtcash]
   XTCASHWalletTests:
     type: bundle.unit-test
@@ -76,7 +76,7 @@ targets:
         product: XTEWalletCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.cash.ipad.tests
+        PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.xtcash.ipad.tests
         TARGETED_DEVICE_FAMILY: "2"
         GENERATE_INFOPLIST_FILE: YES
         TEST_HOST: $(BUILT_PRODUCTS_DIR)/XTCASHWallet.app/XTCASHWallet
