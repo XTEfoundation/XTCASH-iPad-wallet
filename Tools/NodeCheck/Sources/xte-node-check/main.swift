@@ -22,7 +22,8 @@ let explicitNode: NodeInfo? = {
     guard args.count > 1, !args[1].isEmpty else { return nil }
     let port = args.count > 2 ? Int(args[2]) ?? 443 : 443
     let ssl = args.count > 3 ? args[3] == "ssl" : (port == 443)
-    return NodeInfo(name: args[1], host: args[1], port: port, ssl: ssl)
+    let path = args.count > 4 ? args[4] : ""
+    return NodeInfo(name: args[1], host: args[1], port: port, ssl: ssl, path: path)
 }()
 /// Set REQUIRE_EXPLICIT_NODE=1 to fail if the requested node is down instead of trying the public list.
 let strict = ProcessInfo.processInfo.environment["REQUIRE_EXPLICIT_NODE"] == "1"
@@ -49,7 +50,7 @@ func run() async {
             print("DOWN \(candidate.baseURL): \(error.localizedDescription)")
         }
     }
-    guard let (node, info) = picked else { fail("no reachable XTE node") }
+    guard let (node, info) = picked else { fail("no reachable XTCASH node") }
     let daemon = DaemonClient(node: node, timeout: 30)
     print("using \(node.baseURL)")
     guard info.networkTopHeight > 1000 else { fail("implausible height") }

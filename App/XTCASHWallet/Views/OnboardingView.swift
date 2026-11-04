@@ -50,7 +50,7 @@ struct OnboardingView: View {
                     .disabled(mode == .create && !confirmedBackup)
                 }
             }
-            .navigationTitle("XTE Wallet")
+            .navigationTitle("XTCASH Wallet")
         }
     }
 
@@ -65,7 +65,7 @@ struct OnboardingView: View {
             .padding(.vertical, 4)
             .privacySensitive()
             Text(generated.address.encoded()).font(.caption.monospaced()).textSelection(.enabled)
-            Toggle("I wrote down these 25 words. Anyone with them can spend my XTE.", isOn: $confirmedBackup)
+            Toggle("I wrote down these 25 words. Anyone with them can spend my XTCASH.", isOn: $confirmedBackup)
             Button("Generate another") { generated = WalletKeys.generate(); confirmedBackup = false }
         } header: {
             Text("Your mnemonic seed")

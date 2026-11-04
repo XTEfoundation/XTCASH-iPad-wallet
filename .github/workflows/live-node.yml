@@ -1,6 +1,6 @@
 name: Live node check
 
-# Talks to the real XTE network: node list, /info, /getwalletsyncdata, global indexes,
+# Talks to the real XTCASH network: node list, /info, /getwalletsyncdata, global indexes,
 # random outputs, transaction status, and builds (but never broadcasts) a ring-signed
 # transaction using real decoys. Separate from CI so that a node outage does not block merges.
 on:
@@ -19,6 +19,9 @@ on:
       scheme:
         description: "ssl or plain"
         default: ssl
+      path:
+        description: "Path prefix behind a proxy (e.g. /xtcash), empty for a plain daemon"
+        default: ""
       strict:
         description: "Fail if this node is down instead of trying the public list"
         type: boolean
@@ -37,4 +40,4 @@ jobs:
         working-directory: Tools/NodeCheck
         env:
           REQUIRE_EXPLICIT_NODE: ${{ inputs.strict && '1' || '0' }}
-        run: swift run -c release xte-node-check "${{ inputs.host }}" "${{ inputs.port || '443' }}" "${{ inputs.scheme || 'ssl' }}"
+        run: swift run -c release xte-node-check "${{ inputs.host }}" "${{ inputs.port || '443' }}" "${{ inputs.scheme || 'ssl' }}" "${{ inputs.path }}"

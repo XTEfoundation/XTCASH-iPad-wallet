@@ -83,17 +83,17 @@ jobs:
         run: |
           set -o pipefail
           xcodebuild build \
-            -project XTEWallet.xcodeproj \
-            -scheme XTEWallet \
+            -project XTCASHWallet.xcodeproj \
+            -scheme XTCASHWallet \
             -destination "id=${{ steps.sim.outputs.udid }}" \
-            CODE_SIGNING_ALLOWED=NO | tee app-build.log | grep -E "error:|warning: .*XTEWallet|\*\* BUILD"
+            CODE_SIGNING_ALLOWED=NO | tee app-build.log | grep -E "error:|warning: .*XTCASHWallet|\*\* BUILD"
 
       - name: Test app on iPad simulator
         run: |
           set -o pipefail
           xcodebuild test \
-            -project XTEWallet.xcodeproj \
-            -scheme XTEWallet \
+            -project XTCASHWallet.xcodeproj \
+            -scheme XTCASHWallet \
             -destination "id=${{ steps.sim.outputs.udid }}" \
             CODE_SIGNING_ALLOWED=NO | tee app-test.log | grep -E "Test (Suite|Case).*(passed|failed)|error:|\*\* TEST"
 

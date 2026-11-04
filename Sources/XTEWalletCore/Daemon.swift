@@ -14,14 +14,22 @@ public struct NodeInfo: Codable, Hashable, Identifiable, Sendable {
     public var host: String
     public var port: Int
     public var ssl: Bool
+    /// Optional path prefix for nodes behind a reverse proxy, e.g. "/xtcash".
+    public var path: String
 
-    public var id: String { "\(host):\(port)" }
+    public var id: String { "\(host):\(port)\(path)" }
 
-    public init(name: String, host: String, port: Int, ssl: Bool) {
+    public init(name: String, host: String, port: Int, ssl: Bool, path: String = "") {
         self.name = name
         self.host = host
         self.port = port
         self.ssl = ssl
+        self.path = NodeInfo.normalize(path: path)
+    }
+
+    static func normalize(path: String) -> String {
+        let trimmed = path.trimmingCharacters(in: CharacterSet(charactersIn: "/ "))
+        return trimmed.isEmpty ? "" : "/" + trimmed
     }
 
     public var baseURL: URL {
@@ -29,10 +37,11 @@ public struct NodeInfo: Codable, Hashable, Identifiable, Sendable {
         c.scheme = ssl ? "https" : "http"
         c.host = host
         if !((ssl && port == 443) || (!ssl && port == 80)) { c.port = port }
+        c.path = path
         return c.url!
     }
 
-    enum CodingKeys: String, CodingKey { case name, url, host, port, ssl }
+    enum CodingKeys: String, CodingKey { case name, url, host, port, ssl, path }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -44,6 +53,7 @@ public struct NodeInfo: Codable, Hashable, Identifiable, Sendable {
         }
         port = try c.decode(Int.self, forKey: .port)
         ssl = try c.decodeIfPresent(Bool.self, forKey: .ssl) ?? false
+        path = NodeInfo.normalize(path: try c.decodeIfPresent(String.self, forKey: .path) ?? "")
         if name.isEmpty { name = host }
     }
 
@@ -53,6 +63,7 @@ public struct NodeInfo: Codable, Hashable, Identifiable, Sendable {
         try c.encode(host, forKey: .url)
         try c.encode(port, forKey: .port)
         try c.encode(ssl, forKey: .ssl)
+        if !path.isEmpty { try c.encode(path, forKey: .path) }
     }
 }
 
@@ -314,7 +325,7 @@ public final class DaemonClient: DaemonAPI, @unchecked Sendable {
         return r
     }
 
-    /// Downloads the public XTE node list (TRRXITTE/XTEnetworkserver/traaitt.json).
+    /// Downloads the public XTCASH node list (XTEfoundation/XTCASH-wallet nodes.json).
     public static func fetchNodeList(session: URLSession = .shared, url: URL = XTEConfig.nodeListURL) async throws -> [NodeInfo] {
         var req = URLRequest(url: url)
         req.timeoutInterval = 15

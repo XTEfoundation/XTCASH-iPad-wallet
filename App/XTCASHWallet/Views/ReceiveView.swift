@@ -44,7 +44,7 @@ struct ReceiveView: View {
                 }
             }
             Section("Payment request (optional)") {
-                TextField("Amount in XTE", text: $amountText).keyboardType(.decimalPad)
+                TextField("Amount in XTCASH", text: $amountText).keyboardType(.decimalPad)
                 TextField("Payment ID (64 hex)", text: $paymentID).font(.body.monospaced())
                     .textInputAutocapitalization(.never).autocorrectionDisabled()
                 if !amountText.isEmpty || !paymentID.isEmpty {

@@ -1,11 +1,15 @@
 name: TestFlight
 
-# Signed Release archive of the iPad app (io.traaitt.osx.ipad), exported as an
-# App Store .ipa and uploaded to TestFlight. Separate from ci.yml, which keeps
-# building and testing on the simulator.
+# Signed Release archive of the XTCASH iPad app (io.traaitt.cash.ipad), exported
+# as an App Store .ipa and uploaded to TestFlight. Separate from ci.yml, which
+# keeps building and testing on the simulator.
 #
 # Needs the repository secrets IOS_DIST_P12_BASE64, IOS_DIST_P12_PASSWORD,
 # IOS_PROFILE_BASE64, ASC_KEY_P8, ASC_KEY_ID, ASC_ISSUER_ID, APPLE_TEAM_ID.
+# IOS_PROFILE_BASE64 is the App Store profile "XTCASH AppStore io.traaitt.cash.ipad"
+# (UUID e789ec28-c1b7-4beb-931f-01e70bd8c1a5). Without the secrets the "signing"
+# job reports it and the TestFlight job is skipped, so this file never goes red
+# just because the secrets are not set yet.
 
 on:
   # A push to main that touches the app also uploads a new TestFlight build.
@@ -38,18 +42,47 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  signing:
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - id: check
+        env:
+          P12: ${{ secrets.IOS_DIST_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.IOS_DIST_P12_PASSWORD }}
+          PROFILE: ${{ secrets.IOS_PROFILE_BASE64 }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          missing=""
+          for name in P12 P12_PASSWORD PROFILE ASC_KEY_P8 ASC_KEY_ID ASC_ISSUER_ID TEAM_ID; do
+            if [ -z "${!name}" ]; then missing="$missing $name"; fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::notice::TestFlight skipped, signing secrets missing:$missing"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
   testflight:
+    needs: signing
+    if: needs.signing.outputs.ready == 'true'
     runs-on: ${{ inputs.runner || 'macos-15' }}
     timeout-minutes: 120
     env:
-      BUNDLE_ID: io.traaitt.osx.ipad
-      PROFILE_NAME: XTE AppStore io.traaitt.osx.ipad
+      BUNDLE_ID: io.traaitt.cash.ipad
+      PROFILE_NAME: XTCASH AppStore io.traaitt.cash.ipad
+      PROFILE_UUID_EXPECTED: e789ec28-c1b7-4beb-931f-01e70bd8c1a5
     steps:
       - uses: actions/checkout@v4
 
       - name: Build number
-        # Must increase per upload.
-        run: echo "BUILD_NUMBER=$(( ${{ github.run_number }} + 100 ))" >> "$GITHUB_ENV"
+        # Must increase per upload; 1 is the version already in the project.
+        run: echo "BUILD_NUMBER=$(( ${{ github.run_number }} + 1 ))" >> "$GITHUB_ENV"
 
       - name: Select Xcode
         run: |
@@ -88,6 +121,9 @@ jobs:
           security cms -D -i "$RUNNER_TEMP/profile.mobileprovision" > "$RUNNER_TEMP/profile.plist"
           UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$RUNNER_TEMP/profile.plist")
           echo "Profile: $(/usr/libexec/PlistBuddy -c 'Print :Name' "$RUNNER_TEMP/profile.plist") ($UUID)"
+          if [ "$UUID" != "$PROFILE_UUID_EXPECTED" ]; then
+            echo "::warning::IOS_PROFILE_BASE64 is $UUID, expected $PROFILE_NAME ($PROFILE_UUID_EXPECTED)"
+          fi
           for dir in "$HOME/Library/MobileDevice/Provisioning Profiles" "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
             mkdir -p "$dir"
             cp "$RUNNER_TEMP/profile.mobileprovision" "$dir/$UUID.mobileprovision"
@@ -100,8 +136,8 @@ jobs:
         run: |
           # Only the app target is signed manually; Swift packages are not signed.
           ruby -rxcodeproj -e '
-            project = Xcodeproj::Project.open("XTEWallet.xcodeproj")
-            target = project.targets.find { |t| t.name == "XTEWallet" }
+            project = Xcodeproj::Project.open("XTCASHWallet.xcodeproj")
+            target = project.targets.find { |t| t.name == "XTCASHWallet" }
             target.build_configurations.each do |config|
               next unless config.name == "Release"
               s = config.build_settings
@@ -119,11 +155,11 @@ jobs:
         run: |
           set +e
           xcodebuild \
-            -project XTEWallet.xcodeproj \
-            -scheme XTEWallet \
+            -project XTCASHWallet.xcodeproj \
+            -scheme XTCASHWallet \
             -configuration Release \
             -destination 'generic/platform=iOS' \
-            -archivePath "$RUNNER_TEMP/XTEWallet.xcarchive" \
+            -archivePath "$RUNNER_TEMP/XTCASHWallet.xcarchive" \
             -derivedDataPath build \
             CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
             archive > xcodebuild-archive.log 2>&1
@@ -154,7 +190,7 @@ jobs:
           </plist>
           PLIST
           xcodebuild -exportArchive \
-            -archivePath "$RUNNER_TEMP/XTEWallet.xcarchive" \
+            -archivePath "$RUNNER_TEMP/XTCASHWallet.xcarchive" \
             -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
             -exportPath "$RUNNER_TEMP/export"
           IPA=$(ls "$RUNNER_TEMP"/export/*.ipa)

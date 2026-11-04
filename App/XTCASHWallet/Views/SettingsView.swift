@@ -16,7 +16,7 @@ struct SettingsView: View {
                 NavigationLink { NodeView() } label: { LabeledContent("Node", value: model.node.name) }
             }
             Section("Display") {
-                LabeledContent("Currency", value: "XTE only (no fiat prices)")
+                LabeledContent("Currency", value: "XTCASH only (no fiat prices)")
                 LabeledContent("Decimals", value: "\(XTEConfig.decimalPlaces)")
             }
             Section("Security") {
@@ -68,7 +68,7 @@ struct BackupView: View {
         NavigationStack {
             Form {
                 Section {
-                    Text("Anyone with this information can spend your XTE. Never share it or enter it on a website.")
+                    Text("Anyone with this information can spend your XTCASH. Never share it or enter it on a website.")
                         .foregroundStyle(.red)
                 }
                 if let words = try? keys.mnemonic() {

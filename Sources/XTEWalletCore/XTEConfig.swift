@@ -1,17 +1,19 @@
 // Copyright (c) 2026, TRRXITTE Int., incorporate. Licensed under AGPL-3.0.
 //
-// Network parameters for traaitt [XTE]. Values are taken from
-// https://github.com/TRRXITTE/traaitt/blob/master/src/config/CryptoNoteConfig.h
-// and https://github.com/trrxitte/xte-wallet-backend-js/blob/master/lib/Config.ts
+// Network parameters for traaittXTCASH [XTCASH]. Values are taken from
+// https://github.com/TRRXITTE/traaittXTCASH/blob/master/src/config/CryptoNoteConfig.h
+// and src/config/WalletConfig.h, matching the XTCASH React Native wallet
+// (XTEfoundation/XTCASH-wallet src/Config.js). The type keeps its historical
+// name XTEConfig because the core library is shared with the XTE iPad wallet.
 
 import Foundation
 
 public enum XTEConfig {
-    public static let ticker = "XTE"
-    public static let coinName = "traaitt"
+    public static let ticker = "XTCASH"
+    public static let coinName = "traaittXTCASH"
 
     /// CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX
-    public static let addressPrefix: UInt64 = 1334
+    public static let addressPrefix: UInt64 = 925524
 
     /// CRYPTONOTE_DISPLAY_DECIMAL_POINT
     public static let decimalPlaces = 2
@@ -20,7 +22,7 @@ public enum XTEConfig {
     public static let minimumFee: UInt64 = 100
 
     /// DIFFICULTY_TARGET (seconds)
-    public static let blockTargetSeconds: UInt64 = 45
+    public static let blockTargetSeconds: UInt64 = 32
 
     /// CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW
     public static let minedMoneyUnlockWindow: UInt64 = 40
@@ -30,7 +32,7 @@ public enum XTEConfig {
 
     /// CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS / _SECONDS
     public static let lockedTxAllowedDeltaBlocks: UInt64 = 1
-    public static let lockedTxAllowedDeltaSeconds: UInt64 = 45
+    public static let lockedTxAllowedDeltaSeconds: UInt64 = 32
 
     /// GENESIS_BLOCK_TIMESTAMP
     public static let genesisBlockTimestamp: UInt64 = 1_686_748_487
@@ -50,16 +52,23 @@ public enum XTEConfig {
         return (0, UInt64.max, 3)
     }
 
-    /// WalletConfig.h standardAddressLength: varint(1334) + 32 + 32 + 4-byte checksum -> 97 base58 chars.
-    public static let standardAddressLength = 97
-    /// integratedAddressLength = standard + (64 * 11) / 8 = 185.
-    public static let integratedAddressLength = 185
+    /// WalletConfig.h standardAddressLength: varint(925524) (3 bytes) + 32 + 32 + 4-byte checksum
+    /// -> 98 base58 chars, starting with "cash".
+    public static let standardAddressLength = 98
+    /// integratedAddressLength = standard + (64 * 11) / 8 = 186.
+    public static let integratedAddressLength = 186
 
-    public static let uriSchemes = ["xte", "traaitt"]
+    public static let uriSchemes = ["xtcash"]
 
-    /// Default node (TLS) and the public node list used by the official wallets.
-    public static let defaultNode = NodeInfo(name: "XTE main (SSL)", host: "main.trrxitte.com", port: 443, ssl: true)
-    public static let nodeListURL = URL(string: "https://raw.githubusercontent.com/TRRXITTE/XTEnetworkserver/refs/heads/main/traaitt.json")!
+    /// RPC_DEFAULT_PORT / P2P_DEFAULT_PORT of the XTCASH daemon.
+    public static let rpcDefaultPort = 14423
+    public static let p2pDefaultPort = 14487
+
+    /// Default node: the XTCASH daemon on main.trrxitte.com behind the TLS proxy at
+    /// https://main.trrxitte.com/xtcash/ (plain RPC is main.trrxitte.com:14423).
+    public static let defaultNode = NodeInfo(name: "XTCASH main (SSL)", host: "main.trrxitte.com", port: 443, ssl: true, path: "/xtcash")
+    /// Public XTCASH node list (same file the XTCASH React Native wallet uses).
+    public static let nodeListURL = URL(string: "https://raw.githubusercontent.com/XTEfoundation/XTCASH-wallet/main/nodes.json")!
 
     /// BLOCKS_SYNCHRONIZING_DEFAULT_COUNT used by the wallet backend.
     public static let blocksPerSyncRequest: UInt64 = 100

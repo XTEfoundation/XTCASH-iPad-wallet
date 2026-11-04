@@ -4,7 +4,7 @@ import SwiftUI
 import XTEWalletCore
 
 @main
-struct XTEWalletApp: App {
+struct XTCASHWalletApp: App {
     @StateObject private var model = AppModel()
     @Environment(\.scenePhase) private var scenePhase
 
@@ -73,7 +73,7 @@ struct MainSplitView: View {
             List(SidebarItem.allCases, selection: $selection) { item in
                 NavigationLink(value: item) { Label(item.title, systemImage: item.icon) }
             }
-            .navigationTitle("XTE")
+            .navigationTitle(XTEConfig.ticker)
         } detail: {
             NavigationStack {
                 switch selection ?? .wallet {
@@ -98,7 +98,7 @@ struct LockedView: View {
     var body: some View {
         VStack(spacing: 24) {
             Image(systemName: "lock.shield").font(.system(size: 72)).foregroundStyle(.tint)
-            Text("XTE Wallet is locked").font(.title)
+            Text("XTCASH Wallet is locked").font(.title)
             Text(model.address).font(.caption.monospaced()).foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle)
                 .frame(maxWidth: 420)
             Button("Unlock") { model.unlock() }

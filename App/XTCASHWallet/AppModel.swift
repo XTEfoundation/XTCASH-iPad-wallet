@@ -71,7 +71,7 @@ final class AppModel: ObservableObject {
 
     func unlock() {
         do {
-            let k = try KeychainStore.load(reason: "Unlock your XTE wallet")
+            let k = try KeychainStore.load(reason: "Unlock your XTCASH wallet")
             guard k.address.encoded() == address else {
                 lastError = "Keychain keys do not match this wallet."
                 return

@@ -6,7 +6,7 @@ import XTEWalletCore
 struct NodeView: View {
     @EnvironmentObject var model: AppModel
     @State private var customHost = ""
-    @State private var customPort = "14485"
+    @State private var customPort = String(XTEConfig.rpcDefaultPort)
     @State private var customSSL = false
 
     var body: some View {

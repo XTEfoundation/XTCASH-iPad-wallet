@@ -1,4 +1,4 @@
-name: XTEWallet
+name: XTCASHWallet
 options:
   bundleIdPrefix: io.traaitt
   deploymentTarget:
@@ -13,34 +13,34 @@ packages:
   XTEWalletCore:
     path: .
 targets:
-  XTEWallet:
+  XTCASHWallet:
     type: application
     platform: iOS
     sources:
-      - path: App/XTEWallet
+      - path: App/XTCASHWallet
         excludes:
           - PrivacyInfo.xcprivacy
-      - path: App/XTEWallet/PrivacyInfo.xcprivacy
+      - path: App/XTCASHWallet/PrivacyInfo.xcprivacy
         buildPhase: resources
     dependencies:
       - package: XTEWalletCore
         product: XTEWalletCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.osx.ipad
-        PRODUCT_NAME: XTEWallet
+        PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.cash.ipad
+        PRODUCT_NAME: XTCASHWallet
         TARGETED_DEVICE_FAMILY: "2"
         SUPPORTS_MACCATALYST: NO
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         GENERATE_INFOPLIST_FILE: NO
-        INFOPLIST_FILE: App/XTEWallet/Info.plist
+        INFOPLIST_FILE: App/XTCASHWallet/Info.plist
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: ""
     info:
-      path: App/XTEWallet/Info.plist
+      path: App/XTCASHWallet/Info.plist
       properties:
-        CFBundleDisplayName: XTE
+        CFBundleDisplayName: XTCASH
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSRequiresIPhoneOS: true
@@ -61,33 +61,33 @@ targets:
             trrxitte.com:
               NSIncludesSubdomains: true
               NSExceptionAllowsInsecureHTTPLoads: true
-        NSFaceIDUsageDescription: Face ID protects access to your XTE wallet keys.
+        NSFaceIDUsageDescription: Face ID protects access to your XTCASH wallet keys.
         CFBundleURLTypes:
-          - CFBundleURLName: io.traaitt.xte.payment
-            CFBundleURLSchemes: [xte, traaitt]
-  XTEWalletTests:
+          - CFBundleURLName: io.traaitt.cash.payment
+            CFBundleURLSchemes: [xtcash]
+  XTCASHWalletTests:
     type: bundle.unit-test
     platform: iOS
     sources:
-      - path: App/XTEWalletTests
+      - path: App/XTCASHWalletTests
     dependencies:
-      - target: XTEWallet
+      - target: XTCASHWallet
       - package: XTEWalletCore
         product: XTEWalletCore
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.osx.ipad.tests
+        PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.cash.ipad.tests
         TARGETED_DEVICE_FAMILY: "2"
         GENERATE_INFOPLIST_FILE: YES
-        TEST_HOST: $(BUILT_PRODUCTS_DIR)/XTEWallet.app/XTEWallet
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/XTCASHWallet.app/XTCASHWallet
         BUNDLE_LOADER: $(TEST_HOST)
 schemes:
-  XTEWallet:
+  XTCASHWallet:
     build:
       targets:
-        XTEWallet: all
-        XTEWalletTests: [test]
+        XTCASHWallet: all
+        XTCASHWalletTests: [test]
     test:
       targets:
-        - XTEWalletTests
+        - XTCASHWalletTests
       gatherCoverageData: false

@@ -1,5 +1,5 @@
 // swift-tools-version:5.9
-// Live connectivity check against real XTE nodes (used by .github/workflows/live-node.yml).
+// Live connectivity check against real XTCASH nodes (used by .github/workflows/live-node.yml).
 import PackageDescription
 
 let package = Package(

@@ -8,7 +8,7 @@ import XTEWalletCore
 /// Stores the private spend/view keys in the iOS Keychain. Items are bound to this device
 /// (never synced to iCloud) and every read requires Face ID / Touch ID or the device passcode.
 enum KeychainStore {
-    static let service = "io.traaitt.osx.ipad.wallet"
+    static let service = "io.traaitt.cash.ipad.wallet"
     static let account = "primary-wallet-keys"
 
     struct StoredKeys: Codable {

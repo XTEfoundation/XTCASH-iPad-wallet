@@ -3,7 +3,7 @@
 import Foundation
 
 public enum Amount {
-    /// 12345 atomic -> "123.45 XTE"
+    /// 12345 atomic -> "123.45 XTCASH"
     public static func format(_ atomic: UInt64, withTicker: Bool = true) -> String {
         let divisor = pow10(XTEConfig.decimalPlaces)
         let whole = atomic / divisor

@@ -1,8 +1,8 @@
 import XCTest
 import XTEWalletCore
-@testable import XTEWallet
+@testable import XTCASHWallet
 
-final class XTEWalletAppTests: XCTestCase {
+final class XTCASHWalletAppTests: XCTestCase {
     func testQRCodeForAddress() throws {
         let keys = WalletKeys.generate()
         let image = try XCTUnwrap(QRCode.image(for: keys.address.encoded()))
@@ -29,7 +29,8 @@ final class XTEWalletAppTests: XCTestCase {
         XCTAssertNotNil(info["NSFaceIDUsageDescription"])
         let types = info["CFBundleURLTypes"] as? [[String: Any]]
         let schemes = types?.flatMap { $0["CFBundleURLSchemes"] as? [String] ?? [] } ?? []
-        XCTAssertTrue(schemes.contains("xte"))
-        XCTAssertTrue(schemes.contains("traaitt"))
+        XCTAssertEqual(schemes, ["xtcash"])
+        XCTAssertEqual(info["CFBundleDisplayName"] as? String, "XTCASH")
+        XCTAssertEqual(Bundle.main.bundleIdentifier, "io.traaitt.cash.ipad")
     }
 }

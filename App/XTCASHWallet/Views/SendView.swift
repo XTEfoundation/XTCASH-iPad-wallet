@@ -28,18 +28,18 @@ struct SendView: View {
     var body: some View {
         Form {
             Section("Recipient") {
-                TextField("XTE address or xte:// link", text: $addressText, axis: .vertical)
+                TextField("XTCASH address or xtcash:// link", text: $addressText, axis: .vertical)
                     .font(.body.monospaced()).textInputAutocapitalization(.never).autocorrectionDisabled()
                     .onChange(of: addressText) { text in applyURIIfNeeded(text) }
                 if !addressText.isEmpty && parsedAddress == nil {
-                    Text("Not a valid XTE address").foregroundStyle(.red).font(.footnote)
+                    Text("Not a valid XTCASH address").foregroundStyle(.red).font(.footnote)
                 }
                 Button { if let s = UIPasteboard.general.string { addressText = s } } label: {
                     Label("Paste", systemImage: "doc.on.clipboard")
                 }
             }
             Section("Amount") {
-                TextField("Amount in XTE", text: $amountText).keyboardType(.decimalPad)
+                TextField("Amount in XTCASH", text: $amountText).keyboardType(.decimalPad)
                 Text("Available: \(Amount.format(model.balance.unlocked))").font(.footnote).foregroundStyle(.secondary)
             }
             Section("Options") {
@@ -92,7 +92,7 @@ struct SendView: View {
 
     private func applyURIIfNeeded(_ text: String) {
         let lower = text.lowercased()
-        guard lower.hasPrefix("xte:") || lower.hasPrefix("traaitt:"), let uri = try? PaymentURI.parse(text) else { return }
+        guard XTEConfig.uriSchemes.contains(where: { lower.hasPrefix($0 + ":") }), let uri = try? PaymentURI.parse(text) else { return }
         apply(uri)
     }
 

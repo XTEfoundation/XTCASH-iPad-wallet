@@ -1,7 +1,7 @@
 // Copyright (c) 2026, TRRXITTE Int., incorporate. Licensed under AGPL-3.0.
 //
-// xte://<address>?amount=<atomic>&name=<label>&paymentid=<64 hex>
-// (traaitt:// accepted as an alias). Same format the XTEcash React Native wallet produces/parses.
+// xtcash://<address>?amount=<atomic>&name=<label>&paymentid=<64 hex>
+// Same format the XTCASH React Native wallet (XTEfoundation/XTCASH-wallet) produces/parses.
 
 import Foundation
 
@@ -66,9 +66,9 @@ public struct PaymentURI: Equatable, Sendable {
         return uri
     }
 
-    /// Builds an xte:// URI (used for the receive QR code).
+    /// Builds an xtcash:// URI (used for the receive QR code).
     public func uriString() -> String {
-        var s = "xte://\(address)"
+        var s = "\(XTEConfig.uriSchemes[0])://\(address)"
         var q: [String] = []
         if let amount { q.append("amount=\(amount)") }
         if let name, !name.isEmpty {
