@@ -25,12 +25,29 @@ final class XTCASHWalletAppTests: XCTestCase {
 
     func testInfoPlist() {
         let info = Bundle.main.infoDictionary ?? [:]
-        XCTAssertEqual(info["CFBundleShortVersionString"] as? String, "1.0.0")
+        XCTAssertEqual(info["CFBundleShortVersionString"] as? String, "1.0.1")
         XCTAssertNotNil(info["NSFaceIDUsageDescription"])
         let types = info["CFBundleURLTypes"] as? [[String: Any]]
         let schemes = types?.flatMap { $0["CFBundleURLSchemes"] as? [String] ?? [] } ?? []
         XCTAssertEqual(schemes, ["xtcash"])
         XCTAssertEqual(info["CFBundleDisplayName"] as? String, "XTCASH")
         XCTAssertEqual(Bundle.main.bundleIdentifier, "io.traaitt.xtcash.ipad")
+    }
+
+    func testBackgroundRefreshIsDeclared() {
+        let info = Bundle.main.infoDictionary ?? [:]
+        let ids = info["BGTaskSchedulerPermittedIdentifiers"] as? [String] ?? []
+        XCTAssertTrue(ids.contains(PaymentNotifier.taskIdentifier))
+        XCTAssertEqual(info["UIBackgroundModes"] as? [String], ["fetch"])
+    }
+
+    func testWatchOnlyWalletFileFlag() throws {
+        let file = WalletFile(address: "a", state: WalletState(), viewOnly: true)
+        let back = try JSONDecoder().decode(WalletFile.self, from: try JSONEncoder().encode(file))
+        XCTAssertEqual(back.viewOnly, true)
+    }
+
+    func testSecurityDefaults() {
+        XCTAssertTrue(SecurityPrefs.autoLockChoices.contains { $0.seconds == 0 })
     }
 }
