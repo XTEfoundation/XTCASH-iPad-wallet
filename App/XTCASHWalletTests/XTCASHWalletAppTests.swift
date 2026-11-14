@@ -10,7 +10,7 @@ final class XTCASHWalletAppTests: XCTestCase {
     }
 
     func testSidebarHasAllScreens() {
-        XCTAssertEqual(SidebarItem.allCases.map(\.title), ["Wallet", "Send", "Receive", "Transactions", "Node", "Settings"])
+        XCTAssertEqual(SidebarItem.allCases.map(\.title), ["Wallet", "Send", "Receive", "Transactions", "Address book", "Node", "Settings"])
     }
 
     func testWalletFileRoundTripHasNoSecrets() throws {
@@ -25,11 +25,11 @@ final class XTCASHWalletAppTests: XCTestCase {
 
     func testInfoPlist() {
         let info = Bundle.main.infoDictionary ?? [:]
-        XCTAssertEqual(info["CFBundleShortVersionString"] as? String, "1.0.2")
+        XCTAssertEqual(info["CFBundleShortVersionString"] as? String, "1.0.3")
         XCTAssertNotNil(info["NSFaceIDUsageDescription"])
         let types = info["CFBundleURLTypes"] as? [[String: Any]]
         let schemes = types?.flatMap { $0["CFBundleURLSchemes"] as? [String] ?? [] } ?? []
-        XCTAssertEqual(schemes, ["xtcash"])
+        XCTAssertEqual(schemes, ["xtcash", "xtcashwallet"])
         XCTAssertEqual(info["CFBundleDisplayName"] as? String, "XTCASH")
         XCTAssertEqual(Bundle.main.bundleIdentifier, "io.traaitt.xtcash.ipad")
     }
