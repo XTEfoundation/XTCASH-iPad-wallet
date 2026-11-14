@@ -7,7 +7,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.0"
-    MARKETING_VERSION: "1.0.2"
+    MARKETING_VERSION: "1.0.3"
     CURRENT_PROJECT_VERSION: "1"
 packages:
   XTEWalletCore:
@@ -22,9 +22,13 @@ targets:
           - PrivacyInfo.xcprivacy
       - path: App/XTCASHWallet/PrivacyInfo.xcprivacy
         buildPhase: resources
+      - path: Shared
     dependencies:
       - package: XTEWalletCore
         product: XTEWalletCore
+      - target: XTCASHWalletWidgets
+        embed: true
+        codeSign: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.xtcash.ipad
@@ -35,8 +39,16 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: App/XTCASHWallet/Info.plist
+        CODE_SIGN_ENTITLEMENTS: App/XTCASHWallet/XTCASHWallet.entitlements
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: ""
+    entitlements:
+      path: App/XTCASHWallet/XTCASHWallet.entitlements
+      properties:
+        # The app's own group stays first (default for the wallet keys); extensions only get ".shared".
+        keychain-access-groups:
+          - $(AppIdentifierPrefix)io.traaitt.xtcash.ipad
+          - $(AppIdentifierPrefix)io.traaitt.xtcash.ipad.shared
     info:
       path: App/XTCASHWallet/Info.plist
       properties:
@@ -65,10 +77,57 @@ targets:
         BGTaskSchedulerPermittedIdentifiers:
           - $(PRODUCT_BUNDLE_IDENTIFIER).refresh
           - $(PRODUCT_BUNDLE_IDENTIFIER).sync
-        NSFaceIDUsageDescription: Face ID protects access to your XTCASH wallet keys.
+        NSFaceIDUsageDescription: Face ID protects access to your XTCASH wallet keys, the address book and sending.
+        NSSupportsLiveActivities: true
+        NSUserActivityTypes:
+          - io.traaitt.xtcashwallet.receive
+          - io.traaitt.xtcashwallet.send
+        WalletTicker: XTCASH
+        WalletPaymentScheme: xtcash
+        WalletRouteScheme: xtcashwallet
+        WalletActivityPrefix: io.traaitt.xtcashwallet
+        WalletSharedKeychainGroup: $(AppIdentifierPrefix)io.traaitt.xtcash.ipad.shared
         CFBundleURLTypes:
           - CFBundleURLName: io.traaitt.xtcash.payment
             CFBundleURLSchemes: [xtcash]
+          - CFBundleURLName: io.traaitt.xtcash.app
+            CFBundleURLSchemes: [xtcashwallet]
+  XTCASHWalletWidgets:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "16.1"
+    sources:
+      - path: Widgets
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.traaitt.xtcash.ipad.widget
+        PRODUCT_NAME: XTCASHWalletWidgets
+        TARGETED_DEVICE_FAMILY: "2"
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Widgets/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Widgets/Widgets.entitlements
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: ""
+        SKIP_INSTALL: YES
+    entitlements:
+      path: Widgets/Widgets.entitlements
+      properties:
+        keychain-access-groups:
+          - $(AppIdentifierPrefix)io.traaitt.xtcash.ipad.shared
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: XTCASH Widgets
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        WalletTicker: XTCASH
+        WalletPaymentScheme: xtcash
+        WalletRouteScheme: xtcashwallet
+        WalletActivityPrefix: io.traaitt.xtcashwallet
+        WalletSharedKeychainGroup: $(AppIdentifierPrefix)io.traaitt.xtcash.ipad.shared
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
   XTCASHWalletTests:
     type: bundle.unit-test
     platform: iOS
