@@ -2,6 +2,9 @@
 
 import Foundation
 import XCTest
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 @testable import XTEWalletCore
 
 final class WalletBackupTests: XCTestCase {
@@ -140,5 +143,15 @@ final class NodeListPathTests: XCTestCase {
         XCTAssertEqual(n.host, "main.trrxitte.com")
         XCTAssertEqual(n.path, "/xtcash")
         XCTAssertEqual(n.baseURL.absoluteString, "https://main.trrxitte.com/xtcash")
+    }
+}
+
+final class CancellationTests: XCTestCase {
+    func testURLSessionCancellationIsNotAnError() {
+        XCTAssertTrue(isCancellation(CancellationError()))
+        XCTAssertTrue(isCancellation(URLError(.cancelled)))
+        XCTAssertTrue(isCancellation(NSError(domain: NSURLErrorDomain, code: NSURLErrorCancelled)))
+        XCTAssertFalse(isCancellation(URLError(.timedOut)))
+        XCTAssertFalse(isCancellation(DaemonError.http(500)))
     }
 }
