@@ -72,4 +72,9 @@ public enum XTEConfig {
 
     /// BLOCKS_SYNCHRONIZING_DEFAULT_COUNT used by the wallet backend.
     public static let blocksPerSyncRequest: UInt64 = 100
+
+    /// JSON-RPC namespace of xte-rpc-gateway (https://<host>/rpc/xtcash, xtcash_syncBlocks).
+    public static let gatewayNamespace = "xtcash"
+    /// Blocks per xte_syncBlocks call (the gateway's maxSyncBlocks).
+    public static let gatewayBlocksPerRequest: UInt64 = 1000
 }
