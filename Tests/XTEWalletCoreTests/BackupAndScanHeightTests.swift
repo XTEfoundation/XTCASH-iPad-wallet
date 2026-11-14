@@ -132,3 +132,13 @@ final class HardwareWalletTests: XCTestCase {
         XCTAssertFalse(HardwareWalletProvider.all().first { $0.id == "ledger" }!.available)
     }
 }
+
+final class NodeListPathTests: XCTestCase {
+    func testHostWithProxyPathFromReactNativeList() throws {
+        let json = #"{"nodes":[{"name":"SSL","url":"main.trrxitte.com/xtcash","port":443,"ssl":true}]}"#
+        let n = try XCTUnwrap(NodeList.parse(Data(json.utf8)).first)
+        XCTAssertEqual(n.host, "main.trrxitte.com")
+        XCTAssertEqual(n.path, "/xtcash")
+        XCTAssertEqual(n.baseURL.absoluteString, "https://main.trrxitte.com/xtcash")
+    }
+}

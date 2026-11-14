@@ -38,7 +38,8 @@ public struct NodeInfo: Codable, Hashable, Identifiable, Sendable {
         c.host = host
         if !((ssl && port == 443) || (!ssl && port == 80)) { c.port = port }
         c.path = path
-        return c.url!
+        // Never trap on a malformed user/remote entry; the request then fails with a normal error.
+        return c.url ?? URL(string: "\(ssl ? "https" : "http")://invalid.invalid")!
     }
 
     enum CodingKeys: String, CodingKey { case name, url, host, port, ssl, path }
@@ -54,6 +55,11 @@ public struct NodeInfo: Codable, Hashable, Identifiable, Sendable {
         port = try c.decode(Int.self, forKey: .port)
         ssl = try c.decodeIfPresent(Bool.self, forKey: .ssl) ?? false
         path = NodeInfo.normalize(path: try c.decodeIfPresent(String.self, forKey: .path) ?? "")
+        // The React Native node list writes a proxy path into the host ("main.trrxitte.com/xtcash").
+        if let slash = host.firstIndex(of: "/") {
+            if path.isEmpty { path = NodeInfo.normalize(path: String(host[slash...])) }
+            host = String(host[..<slash])
+        }
         if name.isEmpty { name = host }
     }
 
